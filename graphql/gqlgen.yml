@@ -1,0 +1,12 @@
+schema: ./pkg/graphql/schema.graphql 
+
+exec:
+  filename: ./pkg/graphql/generated.go  
+  package: graphql 
+
+models:
+  Account:
+    model: github.com/disbeliefff/ecommerce/pkg/graphql.Account
+    fields:
+      orders:
+        resolver: true
