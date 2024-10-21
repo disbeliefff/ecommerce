@@ -12,10 +12,14 @@ func main() {
 	cfg := config.GetConfig()
 
 	log.Println("[Logger] initializing logger")
+	logging.Init("debug")
 	logger := logging.GetLogger()
 
-	app, err := app.NewApp(cfg, logger)
+	a, err := app.NewApp(cfg, logger)
 	if err != nil {
 		logger.Fatal(err)
 	}
+
+	log.Println("[Server] app starting")
+	a.Run()
 }
