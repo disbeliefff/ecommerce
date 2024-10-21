@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/disbeliefff/ecommerce/internal/app"
 	"github.com/disbeliefff/ecommerce/internal/config"
 	"github.com/disbeliefff/ecommerce/pkg/logging"
 	"log"
