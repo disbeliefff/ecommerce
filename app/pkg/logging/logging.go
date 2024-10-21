@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"io"
 	"log"
+	"os"
 	"path"
 	"runtime"
 )
@@ -25,21 +26,25 @@ func (hook *WriteHook) Fire(entry *logrus.Entry) error {
 			return err
 		}
 	}
-	return err
+	return nil
 }
 
 func (hook *WriteHook) Levels() []logrus.Level {
 	return hook.LogLevels
 }
 
-var e *logrus.Entry
+var loggerInstance *logrus.Logger
+var entryInstance *logrus.Entry
 
 type Logger struct {
 	*logrus.Entry
 }
 
 func GetLogger() *Logger {
-	return &Logger{e}
+	if entryInstance == nil {
+		log.Fatal("Logger not initialized. Please call Init() before using the logger.")
+	}
+	return &Logger{entryInstance}
 }
 
 func (l *Logger) LWithField(k string, v any) *Logger {
@@ -56,9 +61,9 @@ func Init(level string) {
 		log.Fatalln(err)
 	}
 
-	l := logrus.New()
-	l.SetReportCaller(true)
-	l.Formatter = &logrus.TextFormatter{
+	loggerInstance = logrus.New()
+	loggerInstance.SetReportCaller(true)
+	loggerInstance.Formatter = &logrus.TextFormatter{
 		CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) {
 			filename := path.Base(frame.File)
 			return fmt.Sprintf("%s:%d", filename, frame.Line), filename
@@ -66,14 +71,16 @@ func Init(level string) {
 		DisableColors: false,
 		FullTimestamp: true,
 	}
-	l.SetOutput(io.Discard)
 
-	l.AddHook(&WriteHook{
-		Writer:    []io.Writer{l.Writer()},
+	// Измените на os.Stdout или файл, если необходимо
+	loggerInstance.SetOutput(os.Stdout)
+
+	loggerInstance.AddHook(&WriteHook{
+		Writer:    []io.Writer{loggerInstance.Writer()},
 		LogLevels: []logrus.Level{logrusLevel},
 	})
 
-	l.SetLevel(logrusLevel)
+	loggerInstance.SetLevel(logrusLevel)
 
-	e = logrus.NewEntry(l)
+	entryInstance = logrus.NewEntry(loggerInstance)
 }
