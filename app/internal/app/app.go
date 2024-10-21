@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	_ "github.com/disbeliefff/ecommerce/docs"
 	"github.com/disbeliefff/ecommerce/internal/config"
 	"github.com/disbeliefff/ecommerce/pkg/logging"
 	"github.com/disbeliefff/ecommerce/pkg/metric"
