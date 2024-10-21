@@ -1,5 +1,11 @@
 package config
 
+import (
+	"github.com/ilyakaznacheev/cleanenv"
+	"log"
+	"sync"
+)
+
 type Config struct {
 	IsDebug       bool `env:"IS_DEBUG" env-default:"false"`
 	IsDevelopment bool `env:"IS_DEBUG" env-default:"false"`
@@ -15,4 +21,21 @@ type Config struct {
 			Password string `env:"ADMIN_USER_PASSWORD" env-required:"true"`
 		}
 	}
+}
+
+var instance *Config
+var once sync.Once
+
+func GetConfig() *Config {
+	once.Do(func() {
+		log.Print("Collecting config")
+		instance = &Config{}
+		err := cleanenv.ReadEnv(instance)
+		if err != nil {
+			errText := "failed to collect config: %s"
+			configDesc, _ := cleanenv.GetDescription(instance, &errText)
+			log.Fatalf(configDesc, err)
+		}
+	})
+	return instance
 }
