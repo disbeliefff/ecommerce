@@ -42,7 +42,11 @@ func GetLogger() *Logger {
 	return &Logger{e}
 }
 
-func (l *Logger) LWithFields(fields logrus.Fields) *Logger {
+func (l *Logger) LWithField(k string, v any) *Logger {
+	return &Logger{l.WithField(k, v)}
+}
+
+func (l *Logger) LWithFields(fields map[string]any) *Logger {
 	return &Logger{l.WithFields(fields)}
 }
 
