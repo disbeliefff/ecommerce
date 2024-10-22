@@ -13,9 +13,9 @@ func main() {
 
 	log.Println("[Logger] initializing logger")
 	logging.Init("debug")
-	logger := logging.GetLogger()
+	logger := logging.Init(cfg.AppConfig.LogLevel)
 
-	a, err := app.NewApp(cfg, logger)
+	a, err := app.NewApp(cfg, &logger)
 	if err != nil {
 		logger.Fatal(err)
 	}
